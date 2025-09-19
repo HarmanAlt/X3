@@ -18,35 +18,9 @@ interface ModernLandingPageProps {
 const ModernLandingPage: React.FC<ModernLandingPageProps> = ({ onLoginClick, onSignupClick }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
-  const [stats, setStats] = useState<any[]>([]);
 
   useEffect(() => {
     setIsVisible(true);
-
-    // Generate random stats on load
-    const generatedStats = [
-      { 
-        number: (8000 + Math.floor(Math.random() * 2000)).toLocaleString() + '+', 
-        label: 'Active Users', 
-        icon: UserGroupIcon 
-      },
-      { 
-        number: (300 + Math.floor(Math.random() * 200)).toLocaleString() + '+', 
-        label: 'Classes Managed', 
-        icon: AcademicCapIcon 
-      },
-      { 
-        number: (95000 + Math.floor(Math.random() * 10000)).toLocaleString() + '+', 
-        label: 'Attendances Tracked', 
-        icon: CheckCircleIcon 
-      },
-      { 
-        number: (80 + Math.floor(Math.random() * 40)).toString() + '+', 
-        label: 'Faculty Members', 
-        icon: SparklesIcon 
-      }
-    ];
-    setStats(generatedStats);
   }, []);
 
   const scrollToSection = (sectionId: string) => {
@@ -82,6 +56,13 @@ const ModernLandingPage: React.FC<ModernLandingPageProps> = ({ onLoginClick, onS
       description: 'Comprehensive student profiles and attendance tracking',
       color: 'from-purple-500 to-pink-600'
     }
+  ];
+
+  const stats = [
+    { number: '99.9%', label: 'Accuracy Rate', icon: SparklesIcon },
+    { number: 'Smart', label: 'AI Recognition', icon: UserGroupIcon },
+    { number: 'Secure', label: 'Data Protection', icon: AcademicCapIcon },
+    { number: '24/7', label: 'System Uptime', icon: CheckCircleIcon }
   ];
 
   return (
@@ -201,7 +182,154 @@ const ModernLandingPage: React.FC<ModernLandingPageProps> = ({ onLoginClick, onS
       </section>
 
       {/* Features Section */}
-      {/* ... (rest of your sections unchanged) ... */}
+      <section id="features" className="relative z-10 py-24 bg-white/50 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-800 mb-4">
+              Powerful Features for Modern Education
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Everything you need to manage attendance efficiently with cutting-edge technology
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => (
+              <div key={index} className="group">
+                <div className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
+                  <div className={`w-16 h-16 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                    <feature.icon className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-4">{feature.title}</h3>
+                  <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Analytics Section */}
+      <section id="analytics" className="relative z-10 py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-800 mb-4">
+              Advanced Analytics & Insights
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Get detailed insights into attendance patterns and student performance
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center mb-6">
+                <ChartBarIcon className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 mb-4">Real-time Reports</h3>
+              <p className="text-gray-600 leading-relaxed">Generate comprehensive attendance reports with filtering and export options</p>
+            </div>
+            
+            <div className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6">
+                <SparklesIcon className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 mb-4">Predictive Analytics</h3>
+              <p className="text-gray-600 leading-relaxed">AI-powered predictions for attendance patterns and at-risk students</p>
+            </div>
+            
+            <div className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6">
+                <UserGroupIcon className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 mb-4">Student Insights</h3>
+              <p className="text-gray-600 leading-relaxed">Detailed student performance analytics and attendance trends</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* About Section */}
+      <section id="about" className="relative z-10 py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-4xl font-bold text-gray-800 mb-6">About Attendify</h2>
+              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                Attendify is a comprehensive automated attendance management system designed for modern educational institutions. 
+                Our platform combines cutting-edge technology with user-friendly design to streamline attendance tracking.
+              </p>
+              <div className="space-y-4">
+                <div className="flex items-center">
+                  <CheckCircleIcon className="w-6 h-6 text-green-500 mr-3" />
+                  <span className="text-gray-700">High accuracy with QR code and face recognition</span>
+                </div>
+                <div className="flex items-center">
+                  <CheckCircleIcon className="w-6 h-6 text-green-500 mr-3" />
+                  <span className="text-gray-700">Real-time attendance tracking and notifications</span>
+                </div>
+                <div className="flex items-center">
+                  <CheckCircleIcon className="w-6 h-6 text-green-500 mr-3" />
+                  <span className="text-gray-700">Comprehensive analytics and reporting</span>
+                </div>
+                <div className="flex items-center">
+                  <CheckCircleIcon className="w-6 h-6 text-green-500 mr-3" />
+                  <span className="text-gray-700">Easy CSV import/export for bulk operations</span>
+                </div>
+              </div>
+            </div>
+            <div className="bg-gradient-to-br from-indigo-100 to-purple-100 rounded-3xl p-8">
+              <div className="grid grid-cols-2 gap-6">
+                <div className="bg-white rounded-2xl p-6 text-center shadow-lg">
+                  <UserGroupIcon className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
+                  <div className="text-3xl font-bold text-gray-800">Smart</div>
+                  <div className="text-gray-600">Technology</div>
+                </div>
+                <div className="bg-white rounded-2xl p-6 text-center shadow-lg">
+                  <AcademicCapIcon className="w-12 h-12 text-green-600 mx-auto mb-4" />
+                  <div className="text-3xl font-bold text-gray-800">Easy</div>
+                  <div className="text-gray-600">Setup</div>
+                </div>
+                <div className="bg-white rounded-2xl p-6 text-center shadow-lg">
+                  <ChartBarIcon className="w-12 h-12 text-purple-600 mx-auto mb-4" />
+                  <div className="text-3xl font-bold text-gray-800">Fast</div>
+                  <div className="text-gray-600">Processing</div>
+                </div>
+                <div className="bg-white rounded-2xl p-6 text-center shadow-lg">
+                  <CheckCircleIcon className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+                  <div className="text-3xl font-bold text-gray-800">Secure</div>
+                  <div className="text-gray-600">Platform</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="relative z-10 py-24">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-3xl p-12 text-white">
+            <h2 className="text-4xl font-bold mb-6">Ready to Get Started with Attendify?</h2>
+            <p className="text-xl mb-8 opacity-90">
+              Transform your attendance management with modern technology
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={onSignupClick}
+                className="bg-white text-indigo-600 px-8 py-4 rounded-2xl font-semibold text-lg hover:shadow-lg hover:scale-105 transition-all duration-300"
+              >
+                Start Free Trial
+              </button>
+              <button
+                onClick={onLoginClick}
+                className="border-2 border-white text-white px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-white hover:text-indigo-600 transition-all duration-300"
+              >
+                Sign In
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

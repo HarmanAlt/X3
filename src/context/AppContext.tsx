@@ -49,8 +49,8 @@ const mockClasses: Class[] = [
 const mockStudents: Student[] = [
   {
     id: '3',
-    email: 'john.smith@attendify.com',
-    name: 'John Smith',
+    email: 'kartik.smith@attendify.com',
+    name: 'Kartik Smith',
     role: 'student',
     studentId: 'STU001',
     classIds: ['CS101', 'CS201'],
@@ -59,8 +59,8 @@ const mockStudents: Student[] = [
   },
   {
     id: '4',
-    email: 'jane.doe@attendify.com',
-    name: 'Jane Doe',
+    email: 'lokesh.dalal@attendify.com',
+    name: 'Lokesh Dalal',
     role: 'student',
     studentId: 'STU002',
     classIds: ['CS101'],
@@ -73,7 +73,7 @@ const mockFaculty: Faculty[] = [
   {
     id: '2',
     email: 'faculty@attendify.com',
-    name: 'Dr. Sarah Johnson',
+    name: 'Dr. Bhawna Suri',
     role: 'faculty',
     facultyId: 'FAC001',
     assignedClasses: ['CS101', 'CS201'],

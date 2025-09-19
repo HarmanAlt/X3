@@ -21,7 +21,7 @@ const mockUsers: User[] = [
   {
     id: '2',
     email: 'faculty@attendify.com',
-    name: 'Dr. Sarah Johnson',
+    name: 'Dr. Bhawna Suri',
     role: 'faculty',
     facultyId: 'FAC001',
     assignedClasses: ['CS101', 'CS201'],
@@ -30,7 +30,7 @@ const mockUsers: User[] = [
   {
     id: '3',
     email: 'student@attendify.com',
-    name: 'John Smith',
+    name: 'Kartik Smith',
     role: 'student',
     studentId: 'STU001',
     classIds: ['CS101', 'CS201'],
