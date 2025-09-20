@@ -1,19 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
+import { useDashboard } from '../../hooks/useDashboard';
 import {
   HomeIcon,
   UserGroupIcon,
   CalendarIcon,
   ChartBarIcon,
   DocumentTextIcon,
-  CogIcon,
   QrCodeIcon,
   CameraIcon,
   ArrowTrendingUpIcon,
   ArrowTrendingDownIcon,
   ExclamationTriangleIcon,
-  CheckCircleIcon,
   ClockIcon,
   SparklesIcon
 } from '@heroicons/react/24/outline';
@@ -24,12 +23,14 @@ interface ModernDashboardProps {
 
 const ModernDashboard: React.FC<ModernDashboardProps> = ({ setActiveSection }) => {
   const { user } = useAuth();
-  const { students, classes, attendanceRecords } = useApp();
+  const { students, classes } = useApp();
+  const { dashboardData, loading, error } = useDashboard();
 
+  // Use real data from API or fallback to mock data
   const stats = [
     {
       title: 'Overall Attendance',
-      value: '87.5%',
+      value: dashboardData?.statistics?.attendance_rate ? `${dashboardData.statistics.attendance_rate}%` : '87.5%',
       change: '+2.3%',
       trend: 'up',
       icon: ArrowTrendingUpIcon,
@@ -39,7 +40,7 @@ const ModernDashboard: React.FC<ModernDashboardProps> = ({ setActiveSection }) =
     },
     {
       title: 'Total Students',
-      value: students.length.toString(),
+      value: dashboardData?.statistics?.total_students ? dashboardData.statistics.total_students.toString() : students.length.toString(),
       change: '+12',
       trend: 'up',
       icon: UserGroupIcon,
@@ -49,7 +50,7 @@ const ModernDashboard: React.FC<ModernDashboardProps> = ({ setActiveSection }) =
     },
     {
       title: 'Active Classes',
-      value: classes.length.toString(),
+      value: dashboardData?.statistics?.active_classes ? dashboardData.statistics.active_classes.toString() : classes.length.toString(),
       change: '+3',
       trend: 'up',
       icon: CalendarIcon,
@@ -131,16 +132,33 @@ const ModernDashboard: React.FC<ModernDashboardProps> = ({ setActiveSection }) =
     { student: 'Carol Davis', class: 'CS101', time: '10:22 AM', status: 'present' }
   ];
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-96">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-red-500 text-lg mb-4">Failed to load dashboard data</div>
+        <p className="text-gray-600 dark:text-gray-300">{error}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       {/* Welcome Header */}
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-3xl p-8 text-white">
+      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 rounded-3xl p-8 text-white">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold mb-2">
               Welcome back, {user?.name}! 👋
             </h1>
-            <p className="text-indigo-100 text-lg">
+            <p className="text-indigo-100 dark:text-indigo-200 text-lg">
               {new Date().toLocaleDateString('en-US', {
                 weekday: 'long',
                 year: 'numeric',
@@ -150,7 +168,7 @@ const ModernDashboard: React.FC<ModernDashboardProps> = ({ setActiveSection }) =
             </p>
           </div>
           <div className="hidden md:block">
-            <div className="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center">
+            <div className="w-24 h-24 bg-white/20 dark:bg-white/30 rounded-2xl flex items-center justify-center">
               <HomeIcon className="w-12 h-12 text-white" />
             </div>
           </div>
@@ -160,12 +178,12 @@ const ModernDashboard: React.FC<ModernDashboardProps> = ({ setActiveSection }) =
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {stats.map((stat, index) => (
-          <div key={index} className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+          <div key={index} className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
             <div className="flex items-center justify-between mb-4">
-              <div className={`w-10 sm:w-12 h-10 sm:h-12 ${stat.bgColor} rounded-xl flex items-center justify-center`}>
+              <div className={`w-10 sm:w-12 h-10 sm:h-12 ${stat.bgColor} dark:bg-opacity-80 rounded-xl flex items-center justify-center`}>
                 <stat.icon className={`w-5 sm:w-6 h-5 sm:h-6 ${stat.textColor}`} />
               </div>
-              <div className={`flex items-center space-x-1 text-sm ${stat.trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
+              <div className={`flex items-center space-x-1 text-sm ${stat.trend === 'up' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                 {stat.trend === 'up' ? (
                   <ArrowTrendingUpIcon className="w-4 h-4" />
                 ) : (
@@ -174,27 +192,27 @@ const ModernDashboard: React.FC<ModernDashboardProps> = ({ setActiveSection }) =
                 <span className="font-medium">{stat.change}</span>
               </div>
             </div>
-            <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-1">{stat.value}</h3>
-            <p className="text-sm sm:text-base text-gray-600 font-medium">{stat.title}</p>
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100 mb-1">{stat.value}</h3>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-medium">{stat.title}</p>
           </div>
         ))}
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white rounded-2xl p-4 sm:p-8 shadow-lg border border-gray-100">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">Quick Actions</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-8 shadow-lg border border-gray-100 dark:border-gray-700">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4 sm:mb-6">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {quickActions.map((action, index) => (
             <button
               key={index}
               onClick={action.action}
-              className="group p-4 sm:p-6 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-gray-200"
+              className="group p-4 sm:p-6 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-gray-200 dark:border-gray-600"
             >
               <div className={`w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-br ${action.color} rounded-xl flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300`}>
                 <action.icon className="w-5 sm:w-6 h-5 sm:h-6 text-white" />
               </div>
-              <h3 className="text-sm sm:text-base font-bold text-gray-800 mb-2">{action.title}</h3>
-              <p className="text-gray-600 text-xs sm:text-sm">{action.description}</p>
+              <h3 className="text-sm sm:text-base font-bold text-gray-800 dark:text-gray-100 mb-2">{action.title}</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">{action.description}</p>
             </button>
           ))}
         </div>
@@ -202,31 +220,31 @@ const ModernDashboard: React.FC<ModernDashboardProps> = ({ setActiveSection }) =
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* AI Insights */}
-        <div className="bg-white rounded-2xl p-4 sm:p-8 shadow-lg border border-gray-100">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-8 shadow-lg border border-gray-100 dark:border-gray-700">
           <div className="flex items-center mb-6">
-            <SparklesIcon className="w-5 sm:w-6 h-5 sm:h-6 text-indigo-600 mr-2" />
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-800">AI Insights</h2>
+            <SparklesIcon className="w-5 sm:w-6 h-5 sm:h-6 text-indigo-600 dark:text-indigo-400 mr-2" />
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">AI Insights</h2>
           </div>
           <div className="space-y-4">
             {aiInsights.map((insight, index) => (
-              <div key={index} className="p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border border-indigo-100">
+              <div key={index} className="p-4 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-xl border border-indigo-100 dark:border-indigo-800">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm sm:text-base font-semibold text-gray-800">{insight.title}</h3>
+                  <h3 className="text-sm sm:text-base font-semibold text-gray-800 dark:text-gray-100">{insight.title}</h3>
                   <insight.icon className={`w-5 h-5 ${insight.color}`} />
                 </div>
-                <p className="text-xl sm:text-2xl font-bold text-gray-800 mb-1">{insight.value}</p>
-                <p className="text-gray-600 text-xs sm:text-sm">{insight.description}</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100 mb-1">{insight.value}</p>
+                <p className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">{insight.description}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Recent Activity */}
-        <div className="bg-white rounded-2xl p-4 sm:p-8 shadow-lg border border-gray-100">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">Recent Activity</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-8 shadow-lg border border-gray-100 dark:border-gray-700">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4 sm:mb-6">Recent Activity</h2>
           <div className="space-y-4">
             {recentActivity.map((activity, index) => (
-              <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+              <div key={index} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
                     <span className="text-white font-semibold text-sm">
@@ -234,14 +252,14 @@ const ModernDashboard: React.FC<ModernDashboardProps> = ({ setActiveSection }) =
                     </span>
                   </div>
                   <div>
-                    <p className="text-sm sm:text-base font-semibold text-gray-800">{activity.student}</p>
-                    <p className="text-gray-600 text-xs sm:text-sm">{activity.class} • {activity.time}</p>
+                    <p className="text-sm sm:text-base font-semibold text-gray-800 dark:text-gray-100">{activity.student}</p>
+                    <p className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">{activity.class} • {activity.time}</p>
                   </div>
                 </div>
                 <div className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                  activity.status === 'present' ? 'bg-green-100 text-green-800' :
-                  activity.status === 'late' ? 'bg-yellow-100 text-yellow-800' :
-                  'bg-red-100 text-red-800'
+                  activity.status === 'present' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' :
+                  activity.status === 'late' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' :
+                  'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
                 }`}>
                   {activity.status}
                 </div>
@@ -252,13 +270,13 @@ const ModernDashboard: React.FC<ModernDashboardProps> = ({ setActiveSection }) =
       </div>
 
       {/* Attendance Summary Chart Placeholder */}
-      <div className="bg-white rounded-2xl p-4 sm:p-8 shadow-lg border border-gray-100">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">Attendance Summary</h2>
-        <div className="h-48 sm:h-64 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl flex items-center justify-center border border-indigo-100">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-8 shadow-lg border border-gray-100 dark:border-gray-700">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4 sm:mb-6">Attendance Summary</h2>
+        <div className="h-48 sm:h-64 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-xl flex items-center justify-center border border-indigo-100 dark:border-indigo-800">
           <div className="text-center">
-            <ChartBarIcon className="w-12 sm:w-16 h-12 sm:h-16 text-indigo-400 mx-auto mb-4" />
-            <p className="text-sm sm:text-base text-gray-600 font-medium">Interactive charts will be displayed here</p>
-            <p className="text-gray-500 text-xs sm:text-sm mt-2">Weekly attendance trends and analytics</p>
+            <ChartBarIcon className="w-12 sm:w-16 h-12 sm:h-16 text-indigo-400 dark:text-indigo-500 mx-auto mb-4" />
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-medium">Interactive charts will be displayed here</p>
+            <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mt-2">Weekly attendance trends and analytics</p>
           </div>
         </div>
       </div>

@@ -1,7 +1,11 @@
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
+import { useApp } from "../../context/AppContext";
 import {
   Bars3Icon, // v2 replacement for MenuIcon
+  BellIcon,
+  MoonIcon,
+  SunIcon,
 } from "@heroicons/react/24/outline";
 
 interface ModernTopbarProps {
@@ -11,6 +15,7 @@ interface ModernTopbarProps {
 
 const ModernTopbar: React.FC<ModernTopbarProps> = ({ setSidebarOpen, setActiveSection }) => {
   const { user } = useAuth();
+  const { darkMode, toggleDarkMode } = useApp();
 
   // Role-specific gradient classes
   const roleGradients = {
@@ -33,7 +38,7 @@ const ModernTopbar: React.FC<ModernTopbarProps> = ({ setSidebarOpen, setActiveSe
   };
 
   return (
-    <header className="bg-white/80 backdrop-blur-md shadow-lg border-b border-gray-200/50 lg:ml-0 sticky top-0 z-30">
+    <header className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-lg border-b border-gray-200/50 dark:border-gray-700/50 lg:ml-0 sticky top-0 z-30">
       <div className="flex items-center justify-between px-4 sm:px-6 py-4">
         {/* Left section */}
         <div className="flex items-center space-x-4">
@@ -66,9 +71,32 @@ const ModernTopbar: React.FC<ModernTopbarProps> = ({ setSidebarOpen, setActiveSe
         <div className="flex items-center space-x-4">
           {user ? (
             <div className="flex items-center space-x-3">
+              {/* Dark Mode Toggle */}
+              <button
+                onClick={toggleDarkMode}
+                className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+                aria-label="Toggle dark mode"
+              >
+                {darkMode ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
+              </button>
+
+              {/* Notifications */}
+              <button
+                onClick={() => setActiveSection("notifications")}
+                className="relative p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+                aria-label="Notifications"
+              >
+                <BellIcon className="h-5 w-5" />
+                {/* Notification Badge */}
+                <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                  3
+                </span>
+              </button>
+
               {/* User Initials Badge */}
               <div
-                className={`w-9 h-9 bg-gradient-to-br ${currentGradient} rounded-lg flex items-center justify-center`}
+                className={`w-9 h-9 bg-gradient-to-br ${currentGradient} rounded-lg flex items-center justify-center cursor-pointer hover:scale-105 transition-transform duration-200`}
+                onClick={() => setActiveSection("settings")}
               >
                 <span className="text-white font-semibold text-sm">
                   {getInitials(user.name)}
@@ -79,7 +107,7 @@ const ModernTopbar: React.FC<ModernTopbarProps> = ({ setSidebarOpen, setActiveSe
                 <p className="text-sm font-medium text-gray-800 dark:text-gray-100">
                   {user.name}
                 </p>
-                <p className="text-xs text-gray-500 capitalize">{user.role}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{user.role}</p>
               </div>
             </div>
           ) : (

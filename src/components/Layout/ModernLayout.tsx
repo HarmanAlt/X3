@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ModernSidebar from "./ModernSidebar";
 import ModernTopbar from "./ModernTopbar";
 import ModernDashboard from "../Dashboard/ModernDashboard";
+import SettingsSection from "../Settings/SettingsSection";
 import Navbar from "./Navbar"; // agar old navbar bhi use karna ho to
 
 interface ModernLayoutProps {
@@ -20,14 +21,14 @@ const ModernLayout: React.FC<ModernLayoutProps> = ({ defaultSection = "dashboard
       case "reports":
         return <div className="p-6">Reports Page 🚀</div>;
       case "settings":
-        return <div className="p-6">Settings Page ⚙️</div>;
+        return <SettingsSection />;
       default:
         return <div className="p-6">Coming soon...</div>;
     }
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       {/* Sidebar */}
       <ModernSidebar
         sidebarOpen={sidebarOpen}
@@ -45,7 +46,7 @@ const ModernLayout: React.FC<ModernLayoutProps> = ({ defaultSection = "dashboard
         />
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-gray-50 dark:bg-gray-900">
           {renderSection()}
         </main>
       </div>

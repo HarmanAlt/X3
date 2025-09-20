@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { AppProvider } from './context/AppContext';
-import ModernLandingPage from './components/Landing/ModernLandingPage';
+import { apiService } from './services/api';
+import EnhancedLandingPage from './components/Landing/EnhancedLandingPage';
 import ModernLoginPage from './components/Auth/ModernLoginPage';
 import SignupPage from './components/Auth/SignupPage';
 import ForgotPasswordPage from './components/Auth/ForgotPasswordPage';
 import ModernSidebar from './components/Layout/ModernSidebar';
 import ModernTopbar from './components/Layout/ModernTopbar';
-import Dashboard from './components/Dashboard/Dashboard';   // ✅ updated import
+import ModernDashboard from './components/Dashboard/ModernDashboard';
 import AttendanceSection from './components/Attendance/AttendanceSection';
+import DualAttendanceSystem from './components/Attendance/DualAttendanceSystem';
+import FaceEnrollmentSystem from './components/Attendance/FaceEnrollmentSystem';
+import TeacherDashboard from './components/Teacher/TeacherDashboard';
 import ClassesSection from './components/Classes/ClassesSection';
 import StudentsSection from './components/Students/StudentsSection';
 import FacultySection from './components/Faculty/FacultySection';
@@ -17,10 +21,15 @@ import AnalyticsSection from './components/Analytics/AnalyticsSection';
 import SettingsSection from './components/Settings/SettingsSection';
 
 const AppContent: React.FC = () => {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, token } = useAuth();
   const [activeSection, setActiveSection] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [authView, setAuthView] = useState<'landing' | 'login' | 'signup' | 'forgot'>('landing');
+
+  // Initialize API service with token
+  useEffect(() => {
+    apiService.setToken(token);
+  }, [token]);
 
   if (isLoading) {
     return (
@@ -35,7 +44,7 @@ const AppContent: React.FC = () => {
     switch (authView) {
       case 'landing':
         return (
-          <ModernLandingPage
+          <EnhancedLandingPage
             onLoginClick={() => setAuthView('login')}
             onSignupClick={() => setAuthView('signup')}
           />
@@ -64,7 +73,7 @@ const AppContent: React.FC = () => {
         );
       default:
         return (
-          <ModernLandingPage
+          <EnhancedLandingPage
             onLoginClick={() => setAuthView('login')}
             onSignupClick={() => setAuthView('signup')}
           />
@@ -76,9 +85,15 @@ const AppContent: React.FC = () => {
   const renderActiveSection = () => {
     switch (activeSection) {
       case 'dashboard':
-        return <Dashboard setActiveSection={setActiveSection} />;   // ✅ updated
+        return <ModernDashboard setActiveSection={setActiveSection} />;
       case 'attendance':
         return <AttendanceSection />;
+      case 'dual-attendance':
+        return <DualAttendanceSystem />;
+      case 'face-enrollment':
+        return <FaceEnrollmentSystem />;
+      case 'teacher-dashboard':
+        return <TeacherDashboard />;
       case 'classes':
         return <ClassesSection />;
       case 'students':
@@ -92,7 +107,7 @@ const AppContent: React.FC = () => {
       case 'settings':
         return <SettingsSection />;
       default:
-        return <Dashboard setActiveSection={setActiveSection} />;   // ✅ updated
+        return <ModernDashboard setActiveSection={setActiveSection} />;
     }
   };
 
@@ -102,8 +117,8 @@ const AppContent: React.FC = () => {
       <ModernSidebar 
         activeSection={activeSection} 
         setActiveSection={setActiveSection}
-        isOpen={sidebarOpen}
-        setIsOpen={setSidebarOpen}
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
       />
 
       {/* Main Area */}
