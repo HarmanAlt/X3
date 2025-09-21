@@ -19,9 +19,12 @@ export const useDashboard = () => {
     try {
       setLoading(true);
       setError(null);
+      console.log('🔍 Fetching dashboard data with token:', token ? 'Present' : 'Missing');
       const data = await apiService.getDashboardOverview();
+      console.log('📊 Dashboard data received:', data);
       setDashboardData(data.data);
     } catch (err: any) {
+      console.error('💥 Dashboard fetch error:', err);
       setError(err.message || 'Failed to load dashboard data');
     } finally {
       setLoading(false);

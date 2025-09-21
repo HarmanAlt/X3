@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '../types';
+import { apiService } from '../services/api';
 
 interface AuthContextType {
   user: User | null;
@@ -12,8 +13,6 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -31,40 +30,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsLoading(false);
   }, []);
 
-  const makeApiRequest = async (endpoint: string, options: RequestInit = {}) => {
-    const url = `${API_BASE_URL}${endpoint}`;
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    };
-
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
-
-    const response = await fetch(url, {
-      ...options,
-      headers,
-    });
-
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status}`);
-    }
-
-    return response.json();
-  };
-
-  const login = async (email: string, password: string, role: string): Promise<boolean> => {
+  const login = async (email: string, _password: string, role: string): Promise<boolean> => {
     setIsLoading(true);
+    console.log('🔐 Attempting login with:', { email, role });
     
     try {
-      const data = await makeApiRequest('/api/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ email, role }),
-      });
+      // Use the mock API service
+      const data = await apiService.login(email, role);
+      console.log('📥 Received response:', data);
 
       if (data.success) {
         const { user: userData, access_token } = data.data;
+        console.log('✅ Login successful, user data:', userData);
         setUser(userData);
         setToken(access_token);
         localStorage.setItem('attendify_user', JSON.stringify(userData));
@@ -73,10 +50,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         return true;
       }
       
+      console.log('❌ Login failed:', data);
       setIsLoading(false);
       return false;
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('💥 Login error:', error);
       setIsLoading(false);
       return false;
     }
@@ -84,11 +62,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const enrollFace = async (image: string): Promise<boolean> => {
     try {
-      const data = await makeApiRequest('/api/auth/enroll-face', {
-        method: 'POST',
-        body: JSON.stringify({ image }),
-      });
-
+      const data = await apiService.enrollFace(image);
       return data.success;
     } catch (error) {
       console.error('Face enrollment error:', error);
@@ -98,7 +72,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const getFaceStatus = async () => {
     try {
-      const data = await makeApiRequest('/api/auth/face-status');
+      const data = await apiService.getFaceStatus();
       return data.data;
     } catch (error) {
       console.error('Face status error:', error);
