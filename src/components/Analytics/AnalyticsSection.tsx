@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useAuth } from '../../context/AuthContext';
+import StudentAnalytics from './StudentAnalytics';
+import FacultyAnalytics from './FacultyAnalytics';
+import AdminAnalytics from './AdminAnalytics';
 import { apiService } from '../../services/api';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line, PieChart, Pie, Cell, ResponsiveContainer, AreaChart, Area, ScatterChart, Scatter, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import { 
@@ -26,6 +29,21 @@ import {
 const AnalyticsSection: React.FC = () => {
   const { classes, students, attendanceRecords } = useApp();
   const { user } = useAuth();
+
+  // Role-based analytics rendering
+  if (user?.role === 'student') {
+    return <StudentAnalytics />;
+  }
+
+  if (user?.role === 'faculty') {
+    return <FacultyAnalytics />;
+  }
+
+  if (user?.role === 'admin') {
+    return <AdminAnalytics />;
+  }
+
+  // Fallback to original analytics for backward compatibility
   const [selectedMetric, setSelectedMetric] = useState('overview');
   const [timeRange, setTimeRange] = useState('30d');
   const [isLoading, setIsLoading] = useState(false);

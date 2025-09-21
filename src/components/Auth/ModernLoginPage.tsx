@@ -8,11 +8,12 @@ import {
   ArrowLeftIcon,
   EyeIcon,
   EyeSlashIcon,
-  MoonIcon,
-  SunIcon,
   CheckCircleIcon,
   ExclamationCircleIcon,
   InformationCircleIcon,
+  AcademicCapIcon,
+  UserGroupIcon,
+  CogIcon,
 } from '@heroicons/react/24/outline';
 
 interface ModernLoginPageProps {
@@ -38,7 +39,41 @@ const ModernLoginPage: React.FC<ModernLoginPageProps> = ({
   const [isFormValid, setIsFormValid] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const { login, isLoading } = useAuth();
-  const { darkMode, toggleDarkMode } = useApp();
+  const { darkMode } = useApp();
+
+  // Role options with better icons and descriptions
+  const roleOptions = [
+    {
+      id: 'student',
+      name: 'Student',
+      icon: AcademicCapIcon,
+      description: 'Mark attendance and view progress',
+      color: 'from-blue-500 to-cyan-600',
+      bgColor: 'bg-blue-50 dark:bg-blue-900/20',
+      borderColor: 'border-blue-200 dark:border-blue-800',
+      textColor: 'text-blue-700 dark:text-blue-300'
+    },
+    {
+      id: 'faculty',
+      name: 'Faculty',
+      icon: UserGroupIcon,
+      description: 'Manage classes and track attendance',
+      color: 'from-green-500 to-emerald-600',
+      bgColor: 'bg-green-50 dark:bg-green-900/20',
+      borderColor: 'border-green-200 dark:border-green-800',
+      textColor: 'text-green-700 dark:text-green-300'
+    },
+    {
+      id: 'admin',
+      name: 'Admin',
+      icon: CogIcon,
+      description: 'System administration and management',
+      color: 'from-purple-500 to-pink-600',
+      bgColor: 'bg-purple-50 dark:bg-purple-900/20',
+      borderColor: 'border-purple-200 dark:border-purple-800',
+      textColor: 'text-purple-700 dark:text-purple-300'
+    }
+  ];
 
   // Real-time validation
   useEffect(() => {
@@ -127,24 +162,13 @@ const ModernLoginPage: React.FC<ModernLoginPageProps> = ({
         <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30 dark:border-gray-700/30 p-8 hover:shadow-3xl transition-all duration-500 hover:scale-[1.02]">
           {/* Enhanced Header */}
           <div className="text-center mb-8 animate-slide-up">
-            <div className="flex justify-between items-center mb-6">
-              <div></div>
-              <div className="relative">
-                <img 
-                  src="/logo.png" 
-                  alt="Attendify" 
-                  className="w-20 h-20 rounded-2xl shadow-lg hover:scale-110 transition-transform duration-300 animate-float" 
-                />
-                <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl blur opacity-30 animate-pulse"></div>
-              </div>
-              {/* Enhanced Dark Mode Toggle */}
-              <button
-                onClick={toggleDarkMode}
-                className="p-3 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 backdrop-blur-sm border border-white/20 dark:border-gray-600/20 transition-all duration-300 hover:scale-110 hover:rotate-12"
-                aria-label="Toggle dark mode"
-              >
-                {darkMode ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
-              </button>
+            <div className="relative mb-6">
+              <img 
+                src="/logo.png" 
+                alt="Attendify" 
+                className="w-20 h-20 rounded-2xl shadow-lg hover:scale-110 transition-transform duration-300 animate-float mx-auto" 
+              />
+              <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl blur opacity-30 animate-pulse"></div>
             </div>
             <h2 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent mb-3 animate-fade-in">
               Welcome Back
@@ -247,30 +271,56 @@ const ModernLoginPage: React.FC<ModernLoginPageProps> = ({
               )}
             </div>
 
-            {/* Role Selection */}
-            <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Role
+            {/* Enhanced Role Selection */}
+            <div className="space-y-3">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                Select Your Role
               </label>
-              <div className="relative group">
-                <UserIcon className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors duration-200 ${
-                  getFieldStatus('role') === 'focused' ? 'text-indigo-500' : 'text-gray-400 dark:text-gray-500'
-                }`} />
-                <select
-                  value={formData.role}
-                  onChange={(e) => handleInputChange('role', e.target.value)}
-                  onFocus={() => setFocusedField('role')}
-                  onBlur={() => setFocusedField(null)}
-                  className={`w-full pl-12 pr-4 py-4 bg-white/60 dark:bg-gray-700/60 backdrop-blur-sm border rounded-2xl focus:outline-none transition-all duration-300 text-gray-800 dark:text-gray-100 appearance-none ${
-                    getFieldStatus('role') === 'focused' ? 'border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 shadow-lg' :
-                    'border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-indigo-500/20'
-                  }`}
-                  aria-label="User role"
-                >
-                  <option value="student">Student</option>
-                  <option value="faculty">Faculty</option>
-                  <option value="admin">Admin</option>
-                </select>
+              <div className="grid grid-cols-1 gap-3">
+                {roleOptions.map((role) => {
+                  const Icon = role.icon;
+                  const isSelected = formData.role === role.id;
+                  
+                  return (
+                    <button
+                      key={role.id}
+                      type="button"
+                      onClick={() => handleInputChange('role', role.id)}
+                      className={`relative p-4 rounded-2xl border-2 transition-all duration-300 text-left group hover:scale-[1.02] ${
+                        isSelected
+                          ? `${role.bgColor} ${role.borderColor} shadow-lg`
+                          : 'bg-white/40 dark:bg-gray-700/40 border-gray-200 dark:border-gray-600 hover:bg-white/60 dark:hover:bg-gray-700/60'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-4">
+                        <div className={`p-3 rounded-xl transition-all duration-300 ${
+                          isSelected 
+                            ? `bg-gradient-to-r ${role.color} shadow-lg` 
+                            : 'bg-gray-100 dark:bg-gray-600 group-hover:bg-gray-200 dark:group-hover:bg-gray-500'
+                        }`}>
+                          <Icon className={`w-6 h-6 ${
+                            isSelected ? 'text-white' : 'text-gray-600 dark:text-gray-300'
+                          }`} />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className={`font-semibold text-lg ${
+                            isSelected 
+                              ? role.textColor 
+                              : 'text-gray-800 dark:text-gray-100'
+                          }`}>
+                            {role.name}
+                          </h3>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            {role.description}
+                          </p>
+                        </div>
+                        {isSelected && (
+                          <CheckCircleIcon className={`w-6 h-6 ${role.textColor}`} />
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import { useDashboard } from '../../hooks/useDashboard';
+import AttendanceSummary from './AttendanceSummary';
 import {
   HomeIcon,
   UserGroupIcon,
@@ -270,16 +271,7 @@ const ModernDashboard: React.FC<ModernDashboardProps> = ({ setActiveSection }) =
       </div>
 
       {/* Attendance Summary Chart Placeholder */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-8 shadow-lg border border-gray-100 dark:border-gray-700">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4 sm:mb-6">Attendance Summary</h2>
-        <div className="h-48 sm:h-64 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-xl flex items-center justify-center border border-indigo-100 dark:border-indigo-800">
-          <div className="text-center">
-            <ChartBarIcon className="w-12 sm:w-16 h-12 sm:h-16 text-indigo-400 dark:text-indigo-500 mx-auto mb-4" />
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-medium">Interactive charts will be displayed here</p>
-            <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mt-2">Weekly attendance trends and analytics</p>
-          </div>
-        </div>
-      </div>
+      <AttendanceSummary setActiveSection={setActiveSection} />
     </div>
   );
 };
